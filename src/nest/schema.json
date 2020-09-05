@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/schema",
+    "id": "nxNestjsSchematics",
+    "title": "mataf @nrwl/nest Schema",
+    "type": "object",
+    "description": "Wraps a nest module with Mataf's boilerplate",
+    "properties": {
+        "pluginName": {
+            "type": "string",
+            "description": "The given name for one of the generated @nrwl/nest modules",
+            "$default": {
+                "$source": "argv",
+                "index": 0
+            },
+            "x-prompt": "Specify a 'camelCasing' of the of the target NestJS plugin name:\n"
+        }
+    },
+    "required": ["pluginName"]
+}
