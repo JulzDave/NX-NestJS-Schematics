@@ -19,6 +19,7 @@ import { strings } from '@angular-devkit/core';
 import { ISchema } from './schema';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { buildDefaultPath } from '@schematics/angular/utility/project';
+import { writeFileSync } from 'fs'
 // import { IWorkspace } from '../interfaces/workspace';
 
 console.log(parseName, buildDefaultPath);
@@ -27,10 +28,18 @@ console.log(parseName, buildDefaultPath);
 export function nest(_options: ISchema): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         const workspaceConfigBuffer = tree.read('workspace.json');
+        const packageJsonConfigBuffer = tree.read('package.json');
         if (!workspaceConfigBuffer) {
             throw new SchematicsException('Not an NX CLI workspace');
         }
+        if (!packageJsonConfigBuffer) {
+            throw new SchematicsException('Not a NodeJS workspace');
+        }
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
+        const packageJsonConfig = JSON.parse(packageJsonConfigBuffer.toString());
+        packageJsonConfig.scripts["julian"] = true
+        writeFileSync('./package.json', JSON.stringify(packageJsonConfig, null, 4))
+
         const pluginName = _options.pluginName;
         const foundPlugin = workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
         if (!foundPlugin) {
