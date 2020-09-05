@@ -19,12 +19,40 @@ import { strings } from '@angular-devkit/core';
 import { ISchema } from './schema';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { buildDefaultPath } from '@schematics/angular/utility/project';
-import { writeFileSync } from 'fs'
-// import { IWorkspace } from '../interfaces/workspace';
-
+import { writeFileSync } from 'fs';
+import { tail, head, stubString } from 'lodash';
 console.log(parseName, buildDefaultPath);
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
+
+const STUB_STRING = stubString();
+
+function recursiveObjInsersion(
+    data: Record<string, any> = {},
+    props = [STUB_STRING],
+    finalValue: any = STUB_STRING,
+) {
+    if (props.length > 1) {
+        const firstProp = head(props) as string;
+        const newData = data[firstProp];
+        const newProps = tail(props);
+        recursiveObjInsersion(newData, newProps, finalValue);
+        return;
+    } else {
+        const firstProp = head(props) as string;
+        data[firstProp] = finalValue;
+    }
+}
+
+function insertToJson(
+    path: string,
+    data: object,
+    props: string[],
+    finalValue: any,
+) {
+    recursiveObjInsersion(data, props, finalValue);
+    writeFileSync(path, JSON.stringify(data, null, 4));
+}
 export function nest(_options: ISchema): Rule {
     return (tree: Tree, _context: SchematicContext) => {
         const workspaceConfigBuffer = tree.read('workspace.json');
@@ -36,12 +64,49 @@ export function nest(_options: ISchema): Rule {
             throw new SchematicsException('Not a NodeJS workspace');
         }
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
-        const packageJsonConfig = JSON.parse(packageJsonConfigBuffer.toString());
-        packageJsonConfig.scripts["julian"] = true
-        writeFileSync('./package.json', JSON.stringify(packageJsonConfig, null, 4))
+        const packageJsonConfig: Record<string, any> = JSON.parse(
+            packageJsonConfigBuffer.toString(),
+        );
+
+        const targetDependencies = [
+            {
+                path: './package.json',
+                data: packageJsonConfig,
+                propsAndValues: [
+                    {
+                        props: ['dependencies', 'new-prop1'],
+                        finalValue: 'answer',
+                    },
+                    {
+                        props: ['dependencies', 'new-prop2'],
+                        finalValue: 'answer',
+                    },
+                    {
+                        props: ['dependencies', 'new-prop3'],
+                        finalValue: 'answer',
+                    },
+                    {
+                        props: ['dependencies', 'new-prop4'],
+                        finalValue: 'answer',
+                    },
+                ],
+            },
+        ];
+
+        for (const dependency of targetDependencies) {
+            for (const propsAndValue of dependency.propsAndValues) {
+                insertToJson(
+                    dependency.path,
+                    dependency.data,
+                    propsAndValue.props,
+                    propsAndValue.finalValue,
+                );
+            }
+        }
 
         const pluginName = _options.pluginName;
-        const foundPlugin = workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
+        const foundPlugin =
+            workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
         if (!foundPlugin) {
             throw new SchematicsException(`Plugin ${pluginName} not found`);
         }

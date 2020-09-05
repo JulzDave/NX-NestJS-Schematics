@@ -12,7 +12,7 @@
                 "$source": "argv",
                 "index": 0
             },
-            "x-prompt": "Specify a 'camelCasing' of the of the target NestJS plugin name:\n"
+            "x-prompt": "Specify the name of the of the target NestJS plugin:\n"
         }
     },
     "required": ["pluginName"]
