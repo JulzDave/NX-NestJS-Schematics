@@ -9,6 +9,7 @@ import {
     SchematicsException,
     move,
 } from '@angular-devkit/schematics';
+import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
     dasherize,
     // classify,
@@ -19,92 +20,24 @@ import { strings } from '@angular-devkit/core';
 import { ISchema } from './schema';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { buildDefaultPath } from '@schematics/angular/utility/project';
-import { writeFileSync } from 'fs';
-import { tail, head, stubString } from 'lodash';
+import {
+    NodeDependency,
+    addPackageJsonDependency,
+    NodeDependencyType,
+} from '@schematics/angular/utility/dependencies';
 console.log(parseName, buildDefaultPath);
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 
-const STUB_STRING = stubString();
-
-function recursiveObjInsersion(
-    data: Record<string, any> = {},
-    props = [STUB_STRING],
-    finalValue: any = STUB_STRING,
-) {
-    if (props.length > 1) {
-        const firstProp = head(props) as string;
-        const newData = data[firstProp];
-        const newProps = tail(props);
-        recursiveObjInsersion(newData, newProps, finalValue);
-        return;
-    } else {
-        const firstProp = head(props) as string;
-        data[firstProp] = finalValue;
-    }
-}
-
-function insertToJson(
-    path: string,
-    data: object,
-    props: string[],
-    finalValue: any,
-) {
-    recursiveObjInsersion(data, props, finalValue);
-    writeFileSync(path, JSON.stringify(data, null, 4));
-}
-export function nest(_options: ISchema): Rule {
-    return (tree: Tree, _context: SchematicContext) => {
+export function nest(options: ISchema): Rule {
+    return (tree: Tree, context: SchematicContext) => {
         const workspaceConfigBuffer = tree.read('workspace.json');
-        const packageJsonConfigBuffer = tree.read('package.json');
         if (!workspaceConfigBuffer) {
             throw new SchematicsException('Not an NX CLI workspace');
         }
-        if (!packageJsonConfigBuffer) {
-            throw new SchematicsException('Not a NodeJS workspace');
-        }
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
-        const packageJsonConfig: Record<string, any> = JSON.parse(
-            packageJsonConfigBuffer.toString(),
-        );
 
-        const targetDependencies = [
-            {
-                path: './package.json',
-                data: packageJsonConfig,
-                propsAndValues: [
-                    {
-                        props: ['dependencies', 'new-prop1'],
-                        finalValue: 'answer',
-                    },
-                    {
-                        props: ['dependencies', 'new-prop2'],
-                        finalValue: 'answer',
-                    },
-                    {
-                        props: ['dependencies', 'new-prop3'],
-                        finalValue: 'answer',
-                    },
-                    {
-                        props: ['dependencies', 'new-prop4'],
-                        finalValue: 'answer',
-                    },
-                ],
-            },
-        ];
-
-        for (const dependency of targetDependencies) {
-            for (const propsAndValue of dependency.propsAndValues) {
-                insertToJson(
-                    dependency.path,
-                    dependency.data,
-                    propsAndValue.props,
-                    propsAndValue.finalValue,
-                );
-            }
-        }
-
-        const pluginName = _options.pluginName;
+        const pluginName = options.pluginName;
         const foundPlugin =
             workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
         if (!foundPlugin) {
@@ -116,12 +49,30 @@ export function nest(_options: ISchema): Rule {
         const sourceTemplates = url('./files');
         const sourceParameterizedTemplates = apply(sourceTemplates, [
             template({
-                ..._options,
+                ...options,
                 ...strings,
                 name,
             }),
             move(foundPlugin),
         ]);
-        return mergeWith(sourceParameterizedTemplates)(tree, _context);
+        context.addTask(new NodePackageInstallTask());
+        // context.addTask(new RunSchematicTask('add-dependencies', options), [installTaskId]);
+        const lodashDependency: NodeDependency = _nodeDependencyFactory(
+            'tiny',
+            '^0.0.10',
+        );
+        addPackageJsonDependency(tree, lodashDependency);
+        return mergeWith(sourceParameterizedTemplates)(tree, context);
     };
+    function _nodeDependencyFactory(
+        packageName: string,
+        version: string,
+    ): NodeDependency {
+        return {
+            type: NodeDependencyType.Default,
+            name: packageName,
+            version: version,
+            overwrite: true,
+        };
+    }
 }
