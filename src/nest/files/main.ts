@@ -16,7 +16,7 @@ const NODE_TLS_REJECT_UNAUTHORIZED = 'NODE_TLS_REJECT_UNAUTHORIZED';
 const ZERO_STRING_LITERAL = '0';
 const API_STRING_LITERAL_UPPERCASED = 'API';
 const PLACEHOLDER_STRING_LITERAL = 'placeholder'; // TODO: For the Programmer: Address the placeholders and provide content.
-const SWAGGER_VERSION = '1.0.0'
+const SWAGGER_VERSION = '1.0.0';
 
 async function bootstrap() {
     // startAPM({
@@ -39,7 +39,11 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, swaggerOptions, {
         ignoreGlobalPrefix: true,
     });
-    SwaggerModule.setup(API_STRING_LITERAL_UPPERCASED.toLowerCase(), app, document);
+    SwaggerModule.setup(
+        API_STRING_LITERAL_UPPERCASED.toLowerCase(),
+        app,
+        document,
+    );
     const port = process.env.PORT || 3333;
     await app.listen(port, () => {
         Logger.log(
