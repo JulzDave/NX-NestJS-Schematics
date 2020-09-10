@@ -37,6 +37,8 @@ const DEPENDENCIES: [string, string][] = [
     ['@nestjs/swagger', '^4.5.7'],
     ['swagger-ui-express', '^4.1.4'],
     ['compression', '^1.7.4'],
+    ['helmet', '^3.22.0'],
+    ['@types/helmet', '^0.0.48'],
 ];
 
 export function nest(options: ISchema): Rule {
