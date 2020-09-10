@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as helmet from 'helmet'
 // import { start as startAPM } from 'elastic-apm-node';
 
 const PLUGIN_NAME = '<%= pluginName %>';
@@ -26,6 +27,7 @@ async function bootstrap() {
     require(TLS_ACRONYM).DEFAULT_MIN_VERSION = TLS_VERSION; // Allows work with WMB's SSL protocol.
     process.env[NODE_TLS_REJECT_UNAUTHORIZED] = ZERO_STRING_LITERAL; // Allows work with WMB's SSL protocol.
     const app = await NestFactory.create(AppModule);
+    app.use(helmet())
     const globalPrefix = PLUGIN_NAME;
     app.setGlobalPrefix(globalPrefix);
     app.enableCors();
