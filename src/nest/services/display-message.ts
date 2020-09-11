@@ -1,50 +1,87 @@
 import { yellow, underline, bold } from 'chalk';
+var align = require('align-text');
+
+function centerAlign(len: number) {
+    return Math.floor((process.stdout.columns - len) / 2);
+}
 
 export function displayMsgToStdOut(): void {
     const stdOutMessages = [
+        yellow('\n\n'),
         yellow(
-            '\n\n    ______  ______ _____ ____ _____    _____ ____  _____  _____    _____        _____        _            _      ______   ',
+            align(
+                '   ______   ___  ___      _         __  ______      ______       _            _        ______   ',
+                centerAlign,
+            ),
         ),
         yellow(
-            '   / / / / |  ____|_   _|  _ \\_   _|  / ____/ __ \\|  __ \\|  __ \\  |  __ \\ ___  |  __ \\      | |          | |     \\ \\ \\ \\  ',
+            align(
+                '  / / / /   |  \\/  |     | |       / _| | ___ \\___  |  _  \\     | |          | |       \\ \\ \\ \\  ',
+                centerAlign,
+            ),
         ),
         yellow(
-            '  / / / /  | |__    | | | |_) || |   | |   | |  | | |__) | |__) | | |__) ( _ ) | |  | |   __| | ___ _ __ | |_     \\ \\ \\ \\ ',
+            align(
+                ' / / / /    | .  . | __ _| |_ __ _| |_  | |_/ ( _ ) | | | |   __| | ___ _ __ | |_       \\ \\ \\ \\ ',
+                centerAlign,
+            ),
         ),
         yellow(
-            " < < < <   |  __|   | | |  _ < | |   | |   | |  | |  _  /|  ___/  |  _  // _ \\/\\ |  | |  / _` |/ _ \\ '_ \\| __|     > > > >",
+            align(
+                "< < < <     | |\\/| |/ _` | __/ _` |  _| |    // _ \\/\\ | | |  / _` |/ _ \\ '_ \\| __|       > > > >",
+                centerAlign,
+            ),
         ),
         yellow(
-            '  \\ \\ \\ \\  | |     _| |_| |_) || |_  | |___| |__| | | \\ \\| |_     | | \\ \\ (_>  < |__| | | (_| |  __/ |_) | |_ _   / / / / ',
+            align(
+                ' \\ \\ \\ \\    | |  | | (_| | || (_| | |   | |\\ \\ (_>  < |/ /  | (_| |  __/ |_) | |_ _     / / / / ',
+                centerAlign,
+            ),
         ),
         yellow(
-            '   \\_\\_\\_\\ |_|    |_____|____/_____|  \\_____\\____/|_|  \\_\\_(_)    |_|  \\_\\___/\\/_____/   \\__,_|\\___| .__/ \\__(_) /_/_/_/  ',
+            align(
+                '  \\_\\_\\_\\   \\_|  |_/\\__,_|\\__\\__,_|_|   \\_| \\_\\___/\\/___/    \\__,_|\\___| .__/ \\__(_)   /_/_/_/  ',
+                centerAlign,
+            ),
         ),
         yellow(
-            '                                                                                                   | |                    ',
+            align(
+                '                                                                     | |                    ',
+                centerAlign,
+            ),
         ),
         yellow(
-            '                                                                                                   |_|                    ',
+            align(
+                '                                                                     |_|                    ',
+                centerAlign,
+            ),
         ),
+        yellow('\n'),
         yellow(
             bold(
-                underline(
-                    'This is a custom Mataf NX-NestJS dedicated plugin schematic',
+                align(
+                    underline(
+                        'This is a custom Mataf NX-NestJS dedicated plugin schematic',
+                    ),
+                    centerAlign,
                 ),
             ),
         ),
         yellow(
             bold(
-                underline(
-                    'Follow the steps below to take full advantage of this schematic:\n\n',
+                align(
+                    underline(
+                        'Follow the steps below to take full advantage of this schematic:',
+                    ),
+                    centerAlign,
                 ),
             ),
         ),
-        yellow('* Replace placeholders with useful provided content'),
+        yellow('\n'),
+        yellow('* Replace placeholders with useful content'),
         yellow(
             '* Confirm APM ports are open and ready. Then, uncomment the APM configuration snippets in the main.ts file.',
         ),
-        yellow('\n\n'),
     ];
     let index: number = 0;
     const startDisplayingMsg = setInterval(() => {
