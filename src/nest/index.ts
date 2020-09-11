@@ -10,14 +10,12 @@ import {
     move,
 } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import {
-    dasherize,
-} from '@angular-devkit/core/src/utils/strings';
-import { yellow, underline, bold } from 'chalk';
+import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import { strings } from '@angular-devkit/core';
 import { ISchema } from './schema';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { buildDefaultPath } from '@schematics/angular/utility/project';
+import { displayMsgToStdOut } from './services/display-message';
 import {
     NodeDependency,
     addPackageJsonDependency,
@@ -39,6 +37,7 @@ const DEPENDENCIES: [string, string][] = [
     ['compression', '^1.7.4'],
     ['helmet', '^3.22.0'],
     ['@types/helmet', '0.0.48'],
+    ['csurf', '^1.11.0'],
 ];
 
 export function nest(options: ISchema): Rule {
@@ -78,7 +77,9 @@ export function nest(options: ISchema): Rule {
             );
             addPackageJsonDependency(tree, dependencyDetails);
         }
-        displayMsgToStdOut();
+        setTimeout(() => {
+            displayMsgToStdOut();
+        }, 0);
         return mergeWith(sourceParameterizedTemplates)(tree, context);
     };
 
@@ -100,26 +101,3 @@ function deletePackageLock() {
     }
 }
 
-function displayMsgToStdOut(): void {
-    const stdOutMessages = [
-        yellow('\n\n  ___        _____._____.   .__                                  ___     '),
-        yellow(' / _ \\_/\\  _/ ____\\__\\_ |__ |__|     ____  _________________    / _ \\_/\\ '),
-        yellow(' \\/ \\___/  \\   __\\|  || __ \\|  |   _/ ___\\/  _ \\_  __ \\____ \\   \\/ \\___/ '),
-        yellow('            |  |  |  || \\_\\ \\  |   \\  \\__(  <_> )  | \\/  |_> >           '),
-        yellow('            |__|  |__||___  /__| /\\ \\___  >____/|__|  |   __/            '),
-        yellow('                          \\/     \\/     \\/            |__|               \n\n'),
-        yellow(
-            bold(
-                underline('This is a custom Mataf NX-NestJS dedicated plugin schematic\n'),
-            ),
-        ),
-        yellow('* Address placeholders and provide useful content'),
-        yellow('* Confirm APM ports are open and ready.'),
-        yellow(
-            '* Subsequently, uncomment the APM configurations in the main.ts file.\n\n',
-        ),
-    ];
-    for (const msg of stdOutMessages) {
-        console.log(msg);
-    }
-}
