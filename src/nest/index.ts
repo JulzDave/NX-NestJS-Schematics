@@ -28,10 +28,10 @@ console.log(parseName, buildDefaultPath);
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 
-const packageLockPath = 'package-lock.json';
-const workspacePath = 'workspace.json';
-const notInNxMsg = 'Not an NX CLI workspace';
-const schematicTemplatesPath = 'files';
+const PACKAGE_LOCK_PATH = 'package-lock.json';
+const WORKSPACE_PATH = 'workspace.json';
+const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
+const SCHEMATICS_TEMPLATES_PATH = 'files';
 const DEPENDENCIES: [string, string][] = [
     ['elastic-apm-node', '^3.6.1'],
     ['@nestjs/swagger', '^4.5.7'],
@@ -43,9 +43,9 @@ const DEPENDENCIES: [string, string][] = [
 
 export function nest(options: ISchema): Rule {
     return (tree: Tree, context: SchematicContext) => {
-        const workspaceConfigBuffer = tree.read(workspacePath);
+        const workspaceConfigBuffer = tree.read(WORKSPACE_PATH);
         if (!workspaceConfigBuffer) {
-            throw new SchematicsException(notInNxMsg);
+            throw new SchematicsException(NOT_IN_NX_WORKSPACE_MSG);
         }
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
 
@@ -59,7 +59,7 @@ export function nest(options: ISchema): Rule {
         const defaultProjectPath = buildDefaultPath(foundPlugin);
         const parsedPath = parseName(defaultProjectPath, pluginName);
         const { name } = parsedPath;
-        const sourceTemplates = url(schematicTemplatesPath);
+        const sourceTemplates = url(SCHEMATICS_TEMPLATES_PATH);
         const sourceParameterizedTemplates = apply(sourceTemplates, [
             template({
                 ...options,
@@ -95,8 +95,8 @@ export function nest(options: ISchema): Rule {
     }
 }
 function deletePackageLock() {
-    if (existsSync(packageLockPath)) {
-        unlinkSync(packageLockPath);
+    if (existsSync(PACKAGE_LOCK_PATH)) {
+        unlinkSync(PACKAGE_LOCK_PATH);
     }
 }
 
