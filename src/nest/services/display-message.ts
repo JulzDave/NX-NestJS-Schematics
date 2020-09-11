@@ -29,17 +29,29 @@ export function displayMsgToStdOut(): void {
         yellow(
             bold(
                 underline(
-                    'This is a custom Mataf NX-NestJS dedicated plugin schematic\n',
+                    'This is a custom Mataf NX-NestJS dedicated plugin schematic',
                 ),
             ),
         ),
-        yellow('* Address placeholders and provide useful content'),
-        yellow('* Confirm APM ports are open and ready.'),
         yellow(
-            '* Subsequently, uncomment the APM configurations in the main.ts file.\n\n',
+            bold(
+                underline(
+                    'Follow the steps below to take full advantage of this schematic:\n\n',
+                ),
+            ),
         ),
+        yellow('* Replace placeholders with useful provided content'),
+        yellow(
+            '* Confirm APM ports are open and ready. Then, uncomment the APM configuration snippets in the main.ts file.',
+        ),
+        yellow('\n\n'),
     ];
-    for (const msg of stdOutMessages) {
-        console.log(msg);
-    }
+    let index: number = 0;
+    const startDisplayingMsg = setInterval(() => {
+        console.log(stdOutMessages[index]);
+        index++;
+        if (index >= stdOutMessages.length) {
+            clearInterval(startDisplayingMsg);
+        }
+    }, 75);
 }

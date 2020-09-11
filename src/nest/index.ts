@@ -22,22 +22,26 @@ import {
     NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
 import { unlinkSync, existsSync } from 'fs';
-console.log(parseName, buildDefaultPath);
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-
+type Dependency = {
+    name: string;
+    version: string;
+    type: NodeDependencyType;
+};
 const PACKAGE_LOCK_PATH = 'package-lock.json';
 const WORKSPACE_PATH = 'workspace.json';
 const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
 const SCHEMATICS_TEMPLATES_PATH = 'files';
-const DEPENDENCIES: [string, string][] = [
-    ['elastic-apm-node', '^3.6.1'],
-    ['@nestjs/swagger', '^4.5.7'],
-    ['swagger-ui-express', '^4.1.4'],
-    ['compression', '^1.7.4'],
-    ['helmet', '^3.22.0'],
-    ['@types/helmet', '0.0.48'],
-    ['csurf', '^1.11.0'],
+const { Default: dependencies, Dev: devDependencies } = NodeDependencyType;
+const DEPENDENCIES: Dependency[] = [
+    { name: 'elastic-apm-node', version: '^3.6.1', type: dependencies },
+    { name: '@nestjs/swagger', version: '^4.5.7', type: dependencies },
+    { name: 'swagger-ui-express', version: '^4.1.4', type: dependencies },
+    { name: 'compression', version: '^1.7.4', type: dependencies },
+    { name: 'helmet', version: '^3.22.0', type: dependencies },
+    { name: '@types/helmet', version: '0.0.48', type: devDependencies },
+    { name: 'csurf', version: '^1.11.0', type: dependencies },
 ];
 
 export function nest(options: ISchema): Rule {
@@ -68,27 +72,29 @@ export function nest(options: ISchema): Rule {
             move(foundPlugin),
         ]);
         deletePackageLock();
-        context.addTask(new NodePackageInstallTask());
-        // context.addTask(new RunSchematicTask('add-dependencies', options), [installTaskId]);
-        for (const dependency of DEPENDENCIES) {
+        DEPENDENCIES.forEach((dependency) => {
             const dependencyDetails: NodeDependency = _nodeDependencyFactory(
-                dependency[0],
-                dependency[1],
+                dependency.name,
+                dependency.version,
+                dependency.type,
             );
             addPackageJsonDependency(tree, dependencyDetails);
-        }
-        setTimeout(() => {
+        });
+        context.addTask(new NodePackageInstallTask());
+        context.engine.executePostTasks().subscribe(() => {
             displayMsgToStdOut();
-        }, 0);
+        })
+        // context.addTask(new RunSchematicTask('add-dependencies', options), [installTaskId]);
         return mergeWith(sourceParameterizedTemplates)(tree, context);
     };
 
     function _nodeDependencyFactory(
         packageName: string,
         version: string,
+        nodeDependencyType: NodeDependencyType,
     ): NodeDependency {
         return {
-            type: NodeDependencyType.Default,
+            type: nodeDependencyType,
             name: packageName,
             version: version,
             overwrite: true,
@@ -100,4 +106,3 @@ function deletePackageLock() {
         unlinkSync(PACKAGE_LOCK_PATH);
     }
 }
-

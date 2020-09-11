@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/schema",
     "id": "nxNestjsSchematics",
-    "title": "mataf @nrwl/nest Schema",
+    "title": "Mataf @nrwl/nest Schema",
     "type": "object",
     "description": "Wraps a nest module with Mataf's boilerplate",
     "properties": {
