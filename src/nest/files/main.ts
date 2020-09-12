@@ -16,7 +16,7 @@ const PLUGIN_NAME = '<%= pluginName %>';
 const TLS_ACRONYM = 'tls';
 const TLS_VERSION = 'TLSv1';
 const NODE_TLS_REJECT_UNAUTHORIZED = 'NODE_TLS_REJECT_UNAUTHORIZED';
-// const APM_SERVER_URL = 'http://slpelastic-apm01:8200'; // TODO: Place inside the dedicated ENV files.
+// const APM_SERVER_URL = 'http://slpelastic-apm01:8200'; // TODO: Place inside a dedicated ENV file.
 const ZERO_STRING_LITERAL = '0';
 const API_STRING_LITERAL_UPPERCASED = 'API';
 const PLACEHOLDER_STRING_LITERAL = 'placeholder'; // TODO: For the Programmer: Address the placeholders and provide content.

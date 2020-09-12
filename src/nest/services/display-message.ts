@@ -1,12 +1,27 @@
 import { yellow, underline, bold } from 'chalk';
+import { IDependency } from '../dependency';
 var align = require('align-text');
+var columnify = require('columnify');
+const boxen = require('boxen');
 
 function centerAlign(len: number) {
     return Math.floor((process.stdout.columns - len) / 2);
 }
 
-export function displayMsgToStdOut(): void {
+function sortDependencies(dependencies: IDependency[]) {
+    return dependencies.sort((firstEl, secondEl) =>
+        secondEl.name > firstEl.name ? -1 : 1,
+    );
+}
+
+export function displayMsgToStdOut(dependencies: IDependency[]): void {
+    const sortedDependencies = sortDependencies(dependencies);
+    const columns = columnify(sortedDependencies, {
+        columns: ['name', 'version'],
+        config: { version: { align: 'right' } },
+    });
     const stdOutMessages = [
+        boxen(columns, { padding: 1 }),
         yellow('\n\n'),
         yellow(
             align(
@@ -80,8 +95,9 @@ export function displayMsgToStdOut(): void {
         yellow('\n'),
         yellow('* Replace placeholders with useful content'),
         yellow(
-            '* Confirm APM ports are open and ready. Then, uncomment the APM configuration snippets in the main.ts file.',
+            '* Confirm APM ports are open and ready. If affirmative, uncomment the APM configuration snippets in the main.ts file.',
         ),
+        yellow('* Replace placeholders with useful content'),
     ];
     let index: number = 0;
     const startDisplayingMsg = setInterval(() => {

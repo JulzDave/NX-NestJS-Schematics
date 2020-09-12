@@ -22,19 +22,16 @@ import {
     NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
 import { unlinkSync, existsSync } from 'fs';
+import { IDependency } from './dependency';
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-type Dependency = {
-    name: string;
-    version: string;
-    type: NodeDependencyType;
-};
+
 const PACKAGE_LOCK_PATH = 'package-lock.json';
 const WORKSPACE_PATH = 'workspace.json';
 const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
 const SCHEMATICS_TEMPLATES_PATH = 'files';
 const { Default: dependencies, Dev: devDependencies } = NodeDependencyType;
-const DEPENDENCIES: Dependency[] = [
+const DEPENDENCIES: IDependency[] = [
     { name: 'elastic-apm-node', version: '^3.6.1', type: dependencies },
     { name: '@nestjs/swagger', version: '^4.5.7', type: dependencies },
     { name: 'swagger-ui-express', version: '^4.1.4', type: dependencies },
@@ -53,13 +50,13 @@ export function nest(options: ISchema): Rule {
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
 
         const pluginName = options.pluginName;
-        const foundPlugin =
+        const pluginSrcFolderPath =
             workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
-        if (!foundPlugin) {
+        if (!pluginSrcFolderPath) {
             throw new SchematicsException(`Plugin ${pluginName} not found`);
         }
 
-        const defaultProjectPath = buildDefaultPath(foundPlugin);
+        const defaultProjectPath = buildDefaultPath(pluginSrcFolderPath);
         const parsedPath = parseName(defaultProjectPath, pluginName);
         const { name } = parsedPath;
         const sourceTemplates = url(SCHEMATICS_TEMPLATES_PATH);
@@ -69,7 +66,7 @@ export function nest(options: ISchema): Rule {
                 ...strings,
                 name,
             }),
-            move(foundPlugin),
+            move(pluginSrcFolderPath),
         ]);
         deletePackageLock();
         DEPENDENCIES.forEach((dependency) => {
@@ -82,7 +79,7 @@ export function nest(options: ISchema): Rule {
         });
         context.addTask(new NodePackageInstallTask());
         context.engine.executePostTasks().subscribe(() => {
-            displayMsgToStdOut();
+            displayMsgToStdOut(DEPENDENCIES);
         })
         // context.addTask(new RunSchematicTask('add-dependencies', options), [installTaskId]);
         return mergeWith(sourceParameterizedTemplates)(tree, context);
