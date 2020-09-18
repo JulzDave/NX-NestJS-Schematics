@@ -97,7 +97,6 @@ export function displayMsgToStdOut(dependencies: IDependency[]): void {
         yellow(
             '* Confirm APM ports are open and ready. If affirmative, uncomment the APM configuration snippets in the main.ts file.',
         ),
-        yellow('* Seperate sensitive data into dedicated ENV files.'),
     ];
     let index: number = 0;
     const startDisplayingMsg = setInterval(() => {
