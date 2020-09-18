@@ -21,7 +21,7 @@ import {
     addPackageJsonDependency,
     NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
-import { unlinkSync, existsSync } from 'fs';
+import { existsSync } from 'fs';
 import { IDependency } from '../interfaces/dependency';
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -40,7 +40,17 @@ const DEPENDENCIES: IDependency[] = [
     { name: '@types/helmet', version: '0.0.48', type: devDependencies },
     { name: 'csurf', version: '^1.11.0', type: dependencies },
 ];
-
+const filesToDelete = (dasherizedPluginName: string): string[] => {
+    const appDirectory = `apps/${dasherizedPluginName}/src/app`;
+    return [
+        `${appDirectory}/app.controller.spec.ts`,
+        `${appDirectory}/app.controller.ts`,
+        `${appDirectory}/app.service.spec.ts`,
+        `${appDirectory}/app.service.ts`,
+        `${appDirectory}/app.service.ts`,
+        PACKAGE_LOCK_PATH,
+    ];
+};
 export default function nest(options: ISchema): Rule {
     return (tree: Tree, context: SchematicContext) => {
         const workspaceConfigBuffer = tree.read(WORKSPACE_PATH);
@@ -50,8 +60,10 @@ export default function nest(options: ISchema): Rule {
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
 
         const pluginName = options.pluginName;
+        const dasherizedPluginName = dasherize(pluginName);
+
         const pluginSrcFolderPath =
-            workspaceConfig?.projects?.[dasherize(pluginName)]?.sourceRoot;
+            workspaceConfig?.projects?.[dasherizedPluginName]?.sourceRoot;
         if (!pluginSrcFolderPath) {
             throw new SchematicsException(`Plugin ${pluginName} not found`);
         }
@@ -68,7 +80,7 @@ export default function nest(options: ISchema): Rule {
             }),
             move(pluginSrcFolderPath),
         ]);
-        deletePackageLock();
+        deleteFiles(filesToDelete, dasherizedPluginName, tree);
         DEPENDENCIES.forEach((dependency) => {
             const dependencyDetails: NodeDependency = _nodeDependencyFactory(
                 dependency.name,
@@ -80,7 +92,7 @@ export default function nest(options: ISchema): Rule {
         context.addTask(new NodePackageInstallTask());
         context.engine.executePostTasks().subscribe(() => {
             displayMsgToStdOut(DEPENDENCIES);
-        })
+        });
         // context.addTask(new RunSchematicTask('add-dependencies', options), [installTaskId]);
         return mergeWith(sourceParameterizedTemplates)(tree, context);
     };
@@ -99,8 +111,10 @@ export default function nest(options: ISchema): Rule {
     }
 }
 
-function deletePackageLock() {
-    if (existsSync(PACKAGE_LOCK_PATH)) {
-        unlinkSync(PACKAGE_LOCK_PATH);
-    }
+function deleteFiles(cb: Function, dasherizedPluginName: string, tree: Tree) {
+    (cb(dasherizedPluginName) as string[]).forEach((file) => {
+        if (existsSync(file)) {
+            tree.delete(file);
+        }
+    });
 }
