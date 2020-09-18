@@ -14,7 +14,7 @@ export const STDOUT_EXPLANATORY_TITLE = [
 ];
 export const STDOUT_BULLETINS = [
     '* Replace placeholders with useful content.',
-    '* Confirm APM ports are open and ready. If affirmative, uncomment the APM configuration snippets in the main.ts file.',
+    '* Confirm APM ports are open and ready.',
 ];
 
 export const BREAK_LINE = '\n'
