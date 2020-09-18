@@ -1,12 +1,12 @@
 export const STDOUT_ASCII_ART_DATA = [
-    '   ______   ___  ___      _         __  ______      ______       _            _        ______   ',
-    '  / / / /   |  \\/  |     | |       / _| | ___ \\___  |  _  \\     | |          | |       \\ \\ \\ \\  ',
-    ' / / / /    | .  . | __ _| |_ __ _| |_  | |_/ ( _ ) | | | |   __| | ___ _ __ | |_       \\ \\ \\ \\ ',
-    "< < < <     | |\\/| |/ _` | __/ _` |  _| |    // _ \\/\\ | | |  / _` |/ _ \\ '_ \\| __|       > > > >",
-    ' \\ \\ \\ \\    | |  | | (_| | || (_| | |   | |\\ \\ (_>  < |/ /  | (_| |  __/ |_) | |_ _     / / / / ',
-    '  \\_\\_\\_\\   \\_|  |_/\\__,_|\\__\\__,_|_|   \\_| \\_\\___/\\/___/    \\__,_|\\___| .__/ \\__(_)   /_/_/_/  ',
-    '                                                                     | |                    ',
-    '                                                                     |_|                    ',
+    String.raw`   ______   ___  ___      _         __  ______      ______       _            _        ______   `,
+    String.raw`  / / / /   |  \/  |     | |       / _| | ___ \___  |  _  \     | |          | |       \ \ \ \  `,
+    String.raw` / / / /    | .  . | __ _| |_ __ _| |_  | |_/ ( _ ) | | | |   __| | ___ _ __ | |_       \ \ \ \ `,
+    String.raw`< < < <     | |\/| |/ _' | __/ _' |  _| |    // _ \/\ | | |  / _' |/ _ \ '_ \| __|       > > > >`,
+    String.raw` \ \ \ \    | |  | | (_| | || (_| | |   | |\ \ (_>  < |/ /  | (_| |  __/ |_) | |_ _     / / / / `,
+    String.raw`  \_\_\_\   \_|  |_/\__,_|\__\__,_|_|   \_| \_\___/\/___/    \__,_|\___| .__/ \__(_)   /_/_/_/  `,
+    String.raw`                                                                     | |                    `,
+    String.raw`                                                                     |_|                    `,
 ];
 export const STDOUT_EXPLANATORY_TITLE = [
     'This is a custom Mataf NX-NestJS dedicated plugin schematic',
@@ -14,7 +14,7 @@ export const STDOUT_EXPLANATORY_TITLE = [
 ];
 export const STDOUT_BULLETINS = [
     '* Replace placeholders with useful content.',
-    '* Confirm APM ports are open and ready.',
+    '* Confirm APM ports are open and ready. If affirmative, uncomment the APM configuration snippets in the main.ts file.',
 ];
 
 export const BREAK_LINE = '\n'
