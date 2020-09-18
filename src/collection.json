@@ -3,13 +3,8 @@
     "schematics": {
         "nest": {
             "description": "NX NestJS plugin schematic.",
-            "factory": "./nest/index#nest",
+            "factory": "../dist/nest/index",
             "schema": "./nest/schema.json"
-        },
-        "add-dependencies": {
-            "description": "Sets up the specified project after the ng-add dependencies have been installed.",
-            "private": true,
-            "factory": "lodash"
         }
     }
 }

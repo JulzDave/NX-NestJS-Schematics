@@ -12,7 +12,7 @@ import {
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import { dasherize } from '@angular-devkit/core/src/utils/strings';
 import { strings } from '@angular-devkit/core';
-import { ISchema } from './schema';
+import { ISchema } from '../interfaces/schema';
 import { parseName } from '@schematics/angular/utility/parse-name';
 import { buildDefaultPath } from '@schematics/angular/utility/project';
 import { displayMsgToStdOut } from './services/display-message';
@@ -22,14 +22,14 @@ import {
     NodeDependencyType,
 } from '@schematics/angular/utility/dependencies';
 import { unlinkSync, existsSync } from 'fs';
-import { IDependency } from './dependency';
+import { IDependency } from '../interfaces/dependency';
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 
 const PACKAGE_LOCK_PATH = 'package-lock.json';
 const WORKSPACE_PATH = 'workspace.json';
 const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
-const SCHEMATICS_TEMPLATES_PATH = 'files';
+const SCHEMATICS_TEMPLATES_PATH = 'files'; // This path as relative to the root ./dist/nest folder
 const { Default: dependencies, Dev: devDependencies } = NodeDependencyType;
 const DEPENDENCIES: IDependency[] = [
     { name: 'elastic-apm-node', version: '^3.6.1', type: dependencies },
@@ -41,7 +41,7 @@ const DEPENDENCIES: IDependency[] = [
     { name: 'csurf', version: '^1.11.0', type: dependencies },
 ];
 
-export function nest(options: ISchema): Rule {
+export default function nest(options: ISchema): Rule {
     return (tree: Tree, context: SchematicContext) => {
         const workspaceConfigBuffer = tree.read(WORKSPACE_PATH);
         if (!workspaceConfigBuffer) {
@@ -98,6 +98,7 @@ export function nest(options: ISchema): Rule {
         };
     }
 }
+
 function deletePackageLock() {
     if (existsSync(PACKAGE_LOCK_PATH)) {
         unlinkSync(PACKAGE_LOCK_PATH);
