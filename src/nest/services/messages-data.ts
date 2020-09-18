@@ -5,8 +5,8 @@ export const STDOUT_ASCII_ART_DATA = [
     String.raw`< < < <     | |\/| |/ _' | __/ _' |  _| |    // _ \/\ | | |  / _' |/ _ \ '_ \| __|       > > > >`,
     String.raw` \ \ \ \    | |  | | (_| | || (_| | |   | |\ \ (_>  < |/ /  | (_| |  __/ |_) | |_ _     / / / / `,
     String.raw`  \_\_\_\   \_|  |_/\__,_|\__\__,_|_|   \_| \_\___/\/___/    \__,_|\___| .__/ \__(_)   /_/_/_/  `,
-    String.raw`                                                                     | |                        `,
-    String.raw`                                                                     |_|                        `,
+    String.raw`                                                                     | |                    `,
+    String.raw`                                                                     |_|                    `,
 ];
 export const STDOUT_EXPLANATORY_TITLE = [
     'This is a custom Mataf NX-NestJS dedicated plugin schematic',
