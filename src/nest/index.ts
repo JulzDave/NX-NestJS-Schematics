@@ -59,13 +59,13 @@ export default function nest(options: ISchema): Rule {
         }
         const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
 
-        const pluginName = options.pluginName;
+        const { pluginName } = options;
         const dasherizedPluginName = dasherize(pluginName);
 
         const pluginSrcFolderPath =
             workspaceConfig?.projects?.[dasherizedPluginName]?.sourceRoot;
         if (!pluginSrcFolderPath) {
-            throw new SchematicsException(`Plugin ${pluginName} not found`);
+            throw new SchematicsException(`Plugin ${dasherizedPluginName} not found`);
         }
 
         const defaultProjectPath = buildDefaultPath(pluginSrcFolderPath);
@@ -80,7 +80,9 @@ export default function nest(options: ISchema): Rule {
             }),
             move(pluginSrcFolderPath),
         ]);
+
         deleteFiles(filesToDelete, dasherizedPluginName, tree);
+
         DEPENDENCIES.forEach((dependency) => {
             const dependencyDetails: NodeDependency = _nodeDependencyFactory(
                 dependency.name,
