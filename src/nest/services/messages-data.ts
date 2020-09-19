@@ -15,6 +15,7 @@ export const STDOUT_EXPLANATORY_TITLE = [
 export const STDOUT_BULLETINS = [
     '* Replace placeholders with useful content.',
     '* Confirm APM ports are open and ready.',
+    '* When working on vscode, double check that the Eslint extension was installed successfully.',
 ];
 
 export const BREAK_LINE = '\n'
