@@ -1,5 +1,13 @@
+// Third party packages:
 import { yellow, underline, bold } from 'chalk';
+const align = require('align-text');
+const columnify = require('columnify');
+const boxen = require('boxen');
+
+// Interfaces:
 import { IDependency } from '../../interfaces/dependency';
+
+// Data files:
 import {
     BREAK_LINE,
     BREAK_TWO_LINES,
@@ -7,9 +15,6 @@ import {
     STDOUT_BULLETINS,
     STDOUT_EXPLANATORY_TITLE,
 } from './messages-data';
-const align = require('align-text');
-const columnify = require('columnify');
-const boxen = require('boxen');
 
 const DEPENDENCY_NAME = 'name';
 const DEPENDENCY_VERSION = 'version';

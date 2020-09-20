@@ -1,3 +1,4 @@
+// Schematics packages:
 import {
     Rule,
     SchematicContext,
@@ -25,9 +26,6 @@ import { IDependency } from '../interfaces/dependency';
 import { ISchema } from '../interfaces/schema';
 // Services:
 import { displayMsgToStdOut } from './services/display-message';
-
-// You don't have to export the function as default. You can also have more than one rule factory
-// per file.
 
 const WORKSPACE_PATH = 'workspace.json';
 const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
@@ -101,6 +99,9 @@ function assignDependenciesToPackageJson(tree: Tree): void {
         addPackageJsonDependency(tree, dependencyDetails);
     });
 }
+
+// You don't have to export the function as default. You can also have more than one rule factory
+// per file.
 
 export default function nest(options: ISchema): Rule {
     return (tree: Tree, context: SchematicContext) => {
