@@ -11,31 +11,31 @@ const align = require('align-text');
 const columnify = require('columnify');
 const boxen = require('boxen');
 
-const NAME_LITERAL = 'name';
-const VERSION_LITERAL = 'version';
+const DEPENDENCY_NAME = 'name';
+const DEPENDENCY_VERSION = 'version';
 const COLUMNIFY_ALIGNMENT = 'right';
 const COLUMNIFY_CONFIG = {
-    columns: [NAME_LITERAL, VERSION_LITERAL],
+    columns: [DEPENDENCY_NAME, DEPENDENCY_VERSION],
     config: { version: { align: COLUMNIFY_ALIGNMENT } },
 };
 
-function centerAlign(len: number) {
+const centerAlign = (len: number) => {
     return Math.floor((process.stdout.columns - len) / 2);
 }
 
-function sortDependencies(dependencies: IDependency[]) {
+const sortDependencies = (dependencies: IDependency[]): IDependency[] => {
     return dependencies.sort((firstEl, secondEl) =>
         secondEl.name > firstEl.name ? -1 : 1,
     );
 }
 
-function outputToCenter(messageDatum: string, isTitle?: boolean) {
+const outputToCenter = (messageDatum: string, isTitle?: boolean): string[] => {
     return isTitle
         ? align(underline(messageDatum), centerAlign)
         : align(messageDatum, centerAlign);
 }
 
-function logMessage(index: number, messages: any[]) {
+const logMessage = (index: number, messages: any[]): void => {
     const startDisplayingMsg = setInterval(() => {
         console.log(messages[index]);
         index++;
@@ -44,6 +44,7 @@ function logMessage(index: number, messages: any[]) {
         }
     }, 75);
 }
+
 export function displayMsgToStdOut(dependencies: IDependency[]): void {
     const sortedDependencies = sortDependencies(dependencies);
     const columns = columnify(sortedDependencies, COLUMNIFY_CONFIG);
