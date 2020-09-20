@@ -22,11 +22,7 @@
                 "index": 1
             },
             "default": "5",
-            "enum": [
-                "3 seconds",
-                "5 seconds",
-                "10 seconds"
-            ],
+            "enum": ["3 seconds", "5 seconds", "10 seconds"],
             "x-prompt": "Specify the number of seconds to wait before returning a timeout error:",
             "items": [
                 {
@@ -44,7 +40,5 @@
             ]
         }
     },
-    "required": [
-        "pluginName"
-    ]
+    "required": ["pluginName"]
 }

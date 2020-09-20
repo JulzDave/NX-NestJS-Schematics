@@ -15,7 +15,9 @@ describe('HealthController', () => {
 
     describe('healthCheck', () => {
         it('should return "OK"', () => {
-            const healthController = app.get<HealthController>(HealthController);
+            const healthController = app.get<HealthController>(
+                HealthController,
+            );
             expect(healthController.healthCheck()).toEqual({
                 message: 'OK',
             });

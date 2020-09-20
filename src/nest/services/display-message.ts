@@ -19,23 +19,23 @@ const COLUMNIFY_CONFIG = {
     config: { version: { align: COLUMNIFY_ALIGNMENT } },
 };
 
-const centerAlign = (len: number) => {
+function centerAlign(len: number) {
     return Math.floor((process.stdout.columns - len) / 2);
 }
 
-const sortDependencies = (dependencies: IDependency[]): IDependency[] => {
+function sortDependencies(dependencies: IDependency[]): IDependency[] {
     return dependencies.sort((firstEl, secondEl) =>
         secondEl.name > firstEl.name ? -1 : 1,
     );
 }
 
-const outputToCenter = (messageDatum: string, isTitle?: boolean): string[] => {
+function outputToCenter(messageDatum: string, isTitle?: boolean): string[] {
     return isTitle
         ? align(underline(messageDatum), centerAlign)
         : align(messageDatum, centerAlign);
 }
 
-const logMessage = (index: number, messages: any[]): void => {
+function logMessage(index: number, messages: any[]): void {
     const startDisplayingMsg = setInterval(() => {
         console.log(messages[index]);
         index++;

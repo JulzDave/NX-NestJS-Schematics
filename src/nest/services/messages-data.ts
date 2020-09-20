@@ -18,5 +18,5 @@ export const STDOUT_BULLETINS = [
     '* When working on vscode, double check that the Eslint extension was installed successfully.',
 ];
 
-export const BREAK_LINE = '\n'
-export const BREAK_TWO_LINES = '\n\n'
+export const BREAK_LINE = '\n';
+export const BREAK_TWO_LINES = '\n\n';

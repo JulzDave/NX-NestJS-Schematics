@@ -34,17 +34,15 @@ const NOT_IN_NX_WORKSPACE_MSG = 'Not an NX CLI workspace';
 const SCHEMATICS_TEMPLATES_PATH = 'files'; // This path as relative to the root ./dist/nest folder
 
 const FILES_TO_DELETE = {
-    fromAppDirectory:[
+    fromAppDirectory: [
         '/app.controller.spec.ts',
         '/app.controller.ts',
         '/app.service.spec.ts',
         '/app.service.ts',
         '/app.service.ts',
     ],
-    fromRootDirectory: [
-        'package-lock.json'
-    ]
-}
+    fromRootDirectory: ['package-lock.json'],
+};
 
 const { Default: dependencies, Dev: devDependencies } = NodeDependencyType;
 
@@ -58,41 +56,41 @@ const DEPENDENCIES: IDependency[] = [
     { name: 'csurf', version: '^1.11.0', type: dependencies },
 ];
 
-const filesToDelete = (pluginName: string): string[] => {
+function filesToDelete(pluginName: string): string[] {
     const appDirectory = `apps/${pluginName}/src/app`;
-    const {fromAppDirectory, fromRootDirectory} = FILES_TO_DELETE
+    const { fromAppDirectory, fromRootDirectory } = FILES_TO_DELETE;
     const AppDirFilesWithPath = fromAppDirectory.map(
         (file): string => appDirectory + file,
     );
     return AppDirFilesWithPath.concat(fromRootDirectory);
-};
+}
 
-const nodeDependencyFactory = (
+function nodeDependencyFactory(
     packageName: string,
     version: string,
     nodeDependencyType: NodeDependencyType,
-): NodeDependency => {
+): NodeDependency {
     return {
         type: nodeDependencyType,
         name: packageName,
         version: version,
         overwrite: true,
     };
-};
+}
 
-const deleteFiles = (
+function deleteFiles(
     cb: Function,
     dasherizedPluginName: string,
     tree: Tree,
-): void => {
+): void {
     (cb(dasherizedPluginName) as string[]).forEach((file): void => {
         if (existsSync(file)) {
             tree.delete(file);
         }
     });
-};
+}
 
-const assignDependenciesToPackageJson = (tree: Tree): void => {
+function assignDependenciesToPackageJson(tree: Tree): void {
     DEPENDENCIES.forEach((dependency) => {
         const { name, version, type } = dependency;
         const dependencyDetails: NodeDependency = nodeDependencyFactory(
@@ -102,7 +100,7 @@ const assignDependenciesToPackageJson = (tree: Tree): void => {
         );
         addPackageJsonDependency(tree, dependencyDetails);
     });
-};
+}
 
 export default function nest(options: ISchema): Rule {
     return (tree: Tree, context: SchematicContext) => {
